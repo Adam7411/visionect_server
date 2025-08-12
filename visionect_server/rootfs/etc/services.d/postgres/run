@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Czekaj na inicjalizację
+while [ ! -f /var/lib/postgresql/data/PG_VERSION ]; do
+    echo "[postgres] Waiting for database initialization..."
+    sleep 2
+done
+
+echo "[postgres] Starting PostgreSQL..."
+exec su-exec postgres postgres -D /var/lib/postgresql/data
