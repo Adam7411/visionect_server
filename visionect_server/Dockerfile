@@ -1,40 +1,47 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.15
+FROM ${BUILD_FROM}
 
-# Set shell
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# Install required packages
+# Install requirements
 RUN apk add --no-cache \
+    bash \
+    curl \
     postgresql \
     postgresql-contrib \
     redis \
     su-exec \
-    bash \
-    curl \
-    tzdata \
-    s6-overlay
+    tzdata
 
-# Create directories
-RUN mkdir -p /var/lib/postgresql/data \
-    && mkdir -p /var/run/s6/container_environment \
-    && mkdir -p /etc/services.d/postgres \
-    && mkdir -p /etc/services.d/redis \
-    && mkdir -p /etc/services.d/visionect
+# Copy root filesystem
+COPY rootfs /
 
-# Copy rootfs
-COPY rootfs/ /
+# Install Visionect Server based on architecture
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-x86_64.tar.gz -o /tmp/visionect.tar.gz; \
+    elif [ "$TARGETARCH" = "arm64" ] || [ "$TARGETARCH" = "arm" ]; then \
+        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-armv7l.tar.gz -o /tmp/visionect.tar.gz; \
+    fi && \
+    tar -xzf /tmp/visionect.tar.gz -C /opt && \
+    rm /tmp/visionect.tar.gz && \
+    chmod +x /opt/visionect-server-v3/bin/*
 
-# Set permissions
-RUN chmod +x /etc/services.d/postgres/run \
-    && chmod +x /etc/services.d/redis/run \
-    && chmod +x /etc/services.d/visionect/run \
-    && chmod +x /run.sh \
-    && chown -R postgres:postgres /var/lib/postgresql
+# Create PostgreSQL data directory
+RUN mkdir -p /var/lib/postgresql/data && \
+    chown -R postgres:postgres /var/lib/postgresql
+
+# Set executable permissions
+RUN chmod a+x /run.sh
+
+# Labels
+LABEL \
+    io.hass.name="Visionect Server" \
+    io.hass.description="Visionect Server with PostgreSQL and Redis" \
+    io.hass.arch="amd64|armv7|aarch64" \
+    io.hass.type="addon" \
+    io.hass.version="7.6.5"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8081/api/health || exit 1
+    CMD curl -f http://localhost:8081/health || exit 1
 
-# Entrypoint
-ENTRYPOINT ["/run.sh"]
+CMD [ "/run.sh" ]
