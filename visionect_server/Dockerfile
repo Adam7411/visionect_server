@@ -18,8 +18,12 @@ COPY rootfs /
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
         curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-x86_64.tar.gz -o /tmp/visionect.tar.gz; \
-    elif [ "$TARGETARCH" = "arm64" ] || [ "$TARGETARCH" = "arm" ]; then \
+    elif [ "$TARGETARCH" = "armv7" ]; then \
         curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-armv7l.tar.gz -o /tmp/visionect.tar.gz; \
+    elif [ "$TARGETARCH" = "aarch64" ]; then \
+        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-arm64.tar.gz -o /tmp/visionect.tar.gz; \
+    else \
+        echo "Unsupported architecture: $TARGETARCH"; exit 1; \
     fi && \
     tar -xzf /tmp/visionect.tar.gz -C /opt && \
     rm /tmp/visionect.tar.gz && \
@@ -29,8 +33,8 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 RUN mkdir -p /var/lib/postgresql/data && \
     chown -R postgres:postgres /var/lib/postgresql
 
-# Set executable permissions
-RUN chmod a+x /run.sh
+# Set executable permissions for run.sh
+RUN chmod +x /run.sh
 
 # Labels
 LABEL \
