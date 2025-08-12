@@ -5,7 +5,7 @@ bashio::log.info "Starting Visionect Server Add-on..."
 
 # Get configuration
 POSTGRES_USER=$(bashio::config 'postgres_user')
-POSTGRES_PASSWORD=$(bashio::config 'postgres_password')  
+POSTGRES_PASSWORD=$(bashio::config 'postgres_password')
 POSTGRES_DB=$(bashio::config 'postgres_db')
 REDIS_PORT=$(bashio::config 'redis_port')
 IMAGE_TYPE=$(bashio::config 'image_type')
@@ -21,19 +21,19 @@ chown -R postgres:postgres /var/run/postgresql
 # Initialize PostgreSQL if needed
 if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
     bashio::log.info "Initializing PostgreSQL..."
-    
+
     su-exec postgres initdb \
         --username="$POSTGRES_USER" \
         --pwfile=<(echo "$POSTGRES_PASSWORD") \
         -D /var/lib/postgresql/data \
         --auth-local=peer \
         --auth-host=md5
-    
+
     # Configure PostgreSQL
     echo "listen_addresses = 'localhost'" >> /var/lib/postgresql/data/postgresql.conf
     echo "port = 5432" >> /var/lib/postgresql/data/postgresql.conf
-    
-    # Configure authentication  
+
+    # Configure authentication
     echo "local   all             all                                     peer" > /var/lib/postgresql/data/pg_hba.conf
     echo "host    all             all             127.0.0.1/32            md5" >> /var/lib/postgresql/data/pg_hba.conf
     echo "host    all             all             ::1/128                 md5" >> /var/lib/postgresql/data/pg_hba.conf
