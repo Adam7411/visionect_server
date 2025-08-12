@@ -1,2 +1,53 @@
 #!/usr/bin/env bash
-exec /entrypoint.sh
+set -e
+
+# Function to log messages
+log() {
+    echo "[visionect] $1"
+}
+
+log "Waiting for dependencies..."
+
+# Wait for PostgreSQL
+while ! pg_isready -h localhost -p 5432 -U "${POSTGRES_USER:-visionect}" -q; do
+    log "Waiting for PostgreSQL..."
+    sleep 2
+done
+
+# Wait for Redis
+while ! redis-cli -h localhost -p "${REDIS_PORT:-6379}" ping > /dev/null 2>&1; do
+    log "Waiting for Redis..."
+    sleep 2
+done
+
+log "Dependencies ready, starting Visionect Server..."
+
+# Set all required environment variables
+export DB2_1_PORT_5432_TCP_ADDR="${DB2_1_PORT_5432_TCP_ADDR:-localhost}"
+export DB2_1_PORT_5432_TCP_PORT="${DB2_1_PORT_5432_TCP_PORT:-5432}"
+export DB2_1_PORT_5432_TCP_USER="${DB2_1_PORT_5432_TCP_USER:-visionect}"
+export DB2_1_PORT_5432_TCP_PASS="${DB2_1_PORT_5432_TCP_PASS:-visionect}"
+export DB2_1_PORT_5432_TCP_DB="${DB2_1_PORT_5432_TCP_DB:-koala}"
+export REDIS_ADDRESS="${REDIS_ADDRESS:-localhost:6379}"
+export VISIONECT_SERVER_ADDRESS="${VISIONECT_SERVER_ADDRESS:-0.0.0.0}"
+export VISIONECT_SERVER_PORT="${VISIONECT_SERVER_PORT:-8081}"
+
+log "Database: ${DB2_1_PORT_5432_TCP_USER}@${DB2_1_PORT_5432_TCP_ADDR}:${DB2_1_PORT_5432_TCP_PORT}/${DB2_1_PORT_5432_TCP_DB}"
+log "Redis: ${REDIS_ADDRESS}"
+log "Server: ${VISIONECT_SERVER_ADDRESS}:${VISIONECT_SERVER_PORT}"
+
+# Check if we have the original Visionect entrypoint
+if [ -f /entrypoint.sh ]; then
+    log "Using original Visionect entrypoint..."
+    exec /entrypoint.sh
+elif [ -f /usr/local/bin/entrypoint.sh ]; then
+    log "Using Visionect entrypoint from /usr/local/bin..."
+    exec /usr/local/bin/entrypoint.sh
+else
+    log "ERROR: Visionect entrypoint not found!"
+    log "Available files in /:"
+    ls -la /
+    log "Available files in /usr/local/bin/:"
+    ls -la /usr/local/bin/ 2>/dev/null || echo "Directory not found"
+    exit 1
+fi
