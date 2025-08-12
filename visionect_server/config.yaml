@@ -1,7 +1,8 @@
-name: Visionect Server
+name: "Visionect Server"
 version: "7.6.5"
 slug: visionect_server
-description: Visionect Server for Home Assistant with built-in PostgreSQL and Redis
+description: "Visionect Server for Home Assistant with built-in PostgreSQL and Redis"
+url: "https://github.com/Adam7411/homeassistant-visionect-server"
 arch:
   - amd64
   - armv7
@@ -12,14 +13,6 @@ init: false
 map:
   - share:rw
   - config:rw
-privileged: true
-full_access: true
-host_network: true
-ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
-  5432/tcp: 5432
-  6379/tcp: 6379
 options:
   postgres_user: visionect
   postgres_password: visionect
@@ -32,9 +25,13 @@ schema:
   postgres_db: str
   redis_port: int
   image_type: list(auto|raspberry_pi|mini_pc)
-build_from:
-  amd64: "visionect/visionect-server-v3:7.6.5"
-  armv7: "visionect/visionect-server-v3:7.6.5-arm"
-  aarch64: "visionect/visionect-server-v3:7.6.5-arm"
-image:
-  "visionect/visionect-server-v3:{version}"
+ports:
+  8081/tcp: 8081
+  11113/tcp: 11113
+ports_description:
+  8081/tcp: "Visionect Server Web Interface"
+  11113/tcp: "Visionect Server Communication"
+host_network: false
+privileged: false
+full_access: false
+image: "ghcr.io/adam7411/homeassistant-visionect-server-{arch}"
