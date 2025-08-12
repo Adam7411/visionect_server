@@ -1,4 +1,5 @@
-name: "Visionect Server Repository"
-url: "https://github.com/Adam7411/homeassistant-visionect-server"
-maintainer: "Adam7411"
-description: "Home Assistant Add-on repository for Visionect Server with built-in PostgreSQL and Redis support"
+{
+  "name": "Visionect Server",
+  "url": "https://github.com/Adam7411/visionect_server",
+  "maintainer": "Adam7411"
+}
