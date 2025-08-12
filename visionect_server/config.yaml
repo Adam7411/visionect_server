@@ -24,7 +24,10 @@ schema:
   postgres_password: str
   postgres_db: str
   redis_port: int
-  image_type: list(auto|raspberry_pi|mini_pc)
+  image_type:
+    - auto
+    - raspberry_pi
+    - mini_pc
 ports:
   8081/tcp: 8081
   11113/tcp: 11113
