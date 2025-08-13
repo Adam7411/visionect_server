@@ -4,11 +4,11 @@ slug: "visionect_server"
 description: "Visionect Server v3 with built-in Postgres and Redis for x86"
 arch:
   - amd64
-startup: services
-boot: auto
+startup: "services"
+boot: "auto"
 ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
+  "8081/tcp": 8081
+  "11113/tcp": 11113
 privileged:
   - SYS_ADMIN
   - MKNOD
