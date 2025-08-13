@@ -14,6 +14,22 @@ ports:
   8081/tcp: 8081
   11113/tcp: 11113
 options:
-  image_architecture: arm # Default architecture
+  image_architecture: arm
+  db_host: postgres
+  db_port: 5432
+  db_user: visionect
+  db_password: visionect
+  db_name: koala
+  redis_host: redis
+  redis_port: 6379
+  visionect_server_address: localhost
 schema:
   image_architecture: selector
+  db_host: str
+  db_port: int
+  db_user: str
+  db_password: str
+  db_name: str
+  redis_host: str
+  redis_port: int
+  visionect_server_address: str
