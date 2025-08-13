@@ -1,19 +1,12 @@
-FROM visionect/visionect-server-v3:7.6.5-arm # Or visionect/visionect-server-v3:7.6.5
+FROM visionect/visionect-server-v3:7.6.5-arm
 
-# Ustawienie zmiennych środowiskowych (opcjonalne)
-ENV MY_CUSTOM_VARIABLE="some_value"
+# Install Postgres & Redis
+RUN apt-get update && \
+    apt-get install -y postgresql redis-server && \
+    rm -rf /var/lib/apt/lists/*
 
-# Instalacja dodatkowych pakietów (opcjonalne)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    some-package \
-    another-package \
-    && rm -rf /var/lib/apt/lists/*
+# Copy run script
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
-# Kopiowanie własnych skryptów konfiguracyjnych (opcjonalne)
-COPY my-custom-script.sh /opt/
-
-# Nadanie uprawnień wykonywalnych skryptowi (opcjonalne)
-RUN chmod +x /opt/my-custom-script.sh
-
-# Uruchomienie skryptu przy starcie kontenera (opcjonalne)
-CMD ["/opt/my-custom-script.sh"]
+CMD ["/run.sh"]
