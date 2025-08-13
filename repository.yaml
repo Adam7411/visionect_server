@@ -1,6 +1,5 @@
-
 {
-  "name": "Visionect Server",  // Twoja nazwa repozytorium
-  "url": "https://github.com/Adam7411/visionect_server", // URL do repozytorium
-  "maintainer": "Adam7411" // Twój email
+  "name": "Adam7411 Add-ons",
+  "url": "https://github.com/Adam7411/visionect_server",
+  "maintainer": "Adam7411 <your_email@example.com>"
 }
