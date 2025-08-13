@@ -39,8 +39,6 @@ docker run \
   --cap-add SYS_ADMIN \
   --device /dev/fuse:/dev/fuse \
   --restart always \
-  -p 8081:8081 \
-  -p 11113:11113 \
   -e DB2_1_PORT_5432_TCP_ADDR=$DB_HOST \
   -e DB2_1_PORT_5432_TCP_PORT=$DB_PORT \
   -e DB2_1_PORT_5432_TCP_USER=$DB_USER \
