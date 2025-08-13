@@ -1,36 +1,8 @@
-name: Visionect Server
-slug: visionect_server
-description: Visionect Server for e-ink displays.
+name: Test Addon
+slug: test_addon
+description: A simple test addon.
 version: 0.1.0
 arch:
   - aarch64
   - amd64
-  - armv7
-  - i386
 init: false
-map:
-  - config:rw
-ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
-options:
-  image_architecture: arm
-  db_host: postgres
-  db_port: 5432
-  db_user: visionect
-  db_password: visionect
-  db_name: koala
-  redis_host: redis
-  redis_port: 6379
-  visionect_server_address: localhost
-schema:
-  image_architecture: selector
-  db_host: str
-  db_port: int
-  db_user: str
-  db_password: str
-  db_name: str
-  redis_host: str
-  redis_port: int
-  visionect_server_address: str
-icon: "icon.png" # DODAJ TĄ LINIĘ
