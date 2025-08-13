@@ -1,19 +1,19 @@
 name: Visionect Server
-slug: visionect_server # Unikalny identyfikator, używany w Home Assistant
+slug: visionect_server
 description: Visionect Server for e-ink displays.
-version: 0.1.0 # Numer wersji dodatku
+version: 0.1.0
 arch:
-  - aarch64 # ARM64 (Raspberry Pi 4, etc.)
-  - amd64   # x86-64 (Intel/AMD)
-  - armv7   # ARMv7 (Raspberry Pi 3)
-  - i386    # x86
+  - aarch64
+  - amd64
+  - armv7
+  - i386
 init: false
 map:
   - config:rw
 ports:
-  8081/tcp: 8081 # Port dla Visionect Server
+  8081/tcp: 8081
   11113/tcp: 11113
 options:
-  image_arch: arm  # Domyślna architektura
+  image_architecture: arm # Default architecture
 schema:
-  image_arch: selector
+  image_architecture: selector
