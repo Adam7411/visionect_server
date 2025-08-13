@@ -1,40 +1,26 @@
-name: "Visionect Server"
-version: "7.6.5"
-slug: visionect_server
-description: "Visionect Server for Home Assistant with built-in PostgreSQL and Redis"
-url: "https://github.com/Adam7411/homeassistant-visionect-server"
-arch:
-  - amd64
-  - armv7
-  - aarch64
-startup: services
-boot: auto
-init: false
-map:
-  - share:rw
-  - config:rw
-options:
-  postgres_user: visionect
-  postgres_password: visionect
-  postgres_db: koala
-  redis_port: 6379
-  image_type: auto
-schema:
-  postgres_user: str
-  postgres_password: str
-  postgres_db: str
-  redis_port: int
-  image_type:
-    - auto
-    - raspberry_pi
-    - mini_pc
-ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
-ports_description:
-  8081/tcp: "Visionect Server Web Interface"
-  11113/tcp: "Visionect Server Communication"
-host_network: false
-privileged: false
-full_access: false
-image: "ghcr.io/adam7411/homeassistant-visionect-server-{arch}"
+# Domyślna architektura (arm lub x86)
+image_architecture: arm
+
+# Adres IP serwera PostgreSQL
+db_host: postgres
+
+# Port serwera PostgreSQL
+db_port: 5432
+
+# Nazwa użytkownika bazy danych PostgreSQL
+db_user: visionect
+
+# Hasło do bazy danych PostgreSQL
+db_password: visionect
+
+# Nazwa bazy danych PostgreSQL
+db_name: koala
+
+# Adres serwera Redis
+redis_host: redis
+
+# Port serwera Redis
+redis_port: 6379
+
+# Adres serwera Visionect (domyślnie localhost)
+visionect_server_address: localhost
