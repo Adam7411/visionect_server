@@ -1,11 +1,11 @@
-FROM visionect/visionect-server-v3:7.6.5-arm
+FROM visionect/visionect-server-v3:7.6.5
 
-# Install Postgres & Redis
+# Instalacja Postgres i Redis
 RUN apt-get update && \
     apt-get install -y postgresql redis-server && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy run script
+# Kopiowanie skryptu uruchamiającego
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
