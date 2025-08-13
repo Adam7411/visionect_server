@@ -1,18 +1,19 @@
-{
-  "name": "Visionect Server v3",
-  "version": "0.1",
-  "slug": "visionect_server",
-  "description": "Visionect Server v3 with Postgres and Redis",
-  "startup": "services",
-  "boot": "auto",
-  "ports": {
-    "8081/tcp": 8081,
-    "11113/tcp": 11113
-  },
-  "privileged": ["SYS_ADMIN", "MKNOD"],
-  "devices": ["/dev/fuse:/dev/fuse:rwm"],
-  "map": ["share:rw", "config:rw"],
-  "options": {},
-  "schema": {},
-  "image": "local/visionect-server-v3"
-}
+name: "Visionect Server v3"
+version: "0.1.0"
+slug: "visionect_server"
+description: "Visionect Server v3 with built-in Postgres and Redis for x86"
+arch:
+  - amd64
+startup: services
+boot: auto
+ports:
+  8081/tcp: 8081
+  11113/tcp: 11113
+privileged:
+  - SYS_ADMIN
+  - MKNOD
+devices:
+  - /dev/fuse:/dev/fuse:rwm
+map:
+  - share:rw
+  - config:rw
