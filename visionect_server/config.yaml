@@ -1,26 +1,18 @@
-# Domyślna architektura (arm lub x86)
-image_architecture: arm
-
-# Adres IP serwera PostgreSQL
-db_host: postgres
-
-# Port serwera PostgreSQL
-db_port: 5432
-
-# Nazwa użytkownika bazy danych PostgreSQL
-db_user: visionect
-
-# Hasło do bazy danych PostgreSQL
-db_password: visionect
-
-# Nazwa bazy danych PostgreSQL
-db_name: koala
-
-# Adres serwera Redis
-redis_host: redis
-
-# Port serwera Redis
-redis_port: 6379
-
-# Adres serwera Visionect (domyślnie localhost)
-visionect_server_address: localhost
+{
+  "name": "Visionect Server v3",
+  "version": "0.1",
+  "slug": "visionect_server",
+  "description": "Visionect Server v3 with Postgres and Redis",
+  "startup": "services",
+  "boot": "auto",
+  "ports": {
+    "8081/tcp": 8081,
+    "11113/tcp": 11113
+  },
+  "privileged": ["SYS_ADMIN", "MKNOD"],
+  "devices": ["/dev/fuse:/dev/fuse:rwm"],
+  "map": ["share:rw", "config:rw"],
+  "options": {},
+  "schema": {},
+  "image": "local/visionect-server-v3"
+}
