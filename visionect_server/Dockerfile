@@ -1,51 +1,19 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.15
-FROM ${BUILD_FROM}
+FROM visionect/visionect-server-v3:7.6.5-arm # Or visionect/visionect-server-v3:7.6.5
 
-# Install requirements
-RUN apk add --no-cache \
-    bash \
-    curl \
-    postgresql \
-    postgresql-contrib \
-    redis \
-    su-exec \
-    tzdata
+# Ustawienie zmiennych środowiskowych (opcjonalne)
+ENV MY_CUSTOM_VARIABLE="some_value"
 
-# Copy root filesystem
-COPY rootfs /
+# Instalacja dodatkowych pakietów (opcjonalne)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    some-package \
+    another-package \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Visionect Server based on architecture
-ARG TARGETARCH
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-x86_64.tar.gz -o /tmp/visionect.tar.gz; \
-    elif [ "$TARGETARCH" = "armv7" ]; then \
-        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-armv7l.tar.gz -o /tmp/visionect.tar.gz; \
-    elif [ "$TARGETARCH" = "aarch64" ]; then \
-        curl -L https://github.com/visionect/visionect-server-v3/releases/download/7.6.5/visionect-server-v3-7.6.5-linux-arm64.tar.gz -o /tmp/visionect.tar.gz; \
-    else \
-        echo "Unsupported architecture: $TARGETARCH"; exit 1; \
-    fi && \
-    tar -xzf /tmp/visionect.tar.gz -C /opt && \
-    rm /tmp/visionect.tar.gz && \
-    chmod +x /opt/visionect-server-v3/bin/*
+# Kopiowanie własnych skryptów konfiguracyjnych (opcjonalne)
+COPY my-custom-script.sh /opt/
 
-# Create PostgreSQL data directory
-RUN mkdir -p /var/lib/postgresql/data && \
-    chown -R postgres:postgres /var/lib/postgresql
+# Nadanie uprawnień wykonywalnych skryptowi (opcjonalne)
+RUN chmod +x /opt/my-custom-script.sh
 
-# Set executable permissions for run.sh
-RUN chmod +x /run.sh
-
-# Labels
-LABEL \
-    io.hass.name="Visionect Server" \
-    io.hass.description="Visionect Server with PostgreSQL and Redis" \
-    io.hass.arch="amd64|armv7|aarch64" \
-    io.hass.type="addon" \
-    io.hass.version="7.6.5"
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8081/health || exit 1
-
-CMD [ "/run.sh" ]
+# Uruchomienie skryptu przy starcie kontenera (opcjonalne)
+CMD ["/opt/my-custom-script.sh"]
