@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - "main"
+  workflow_dispatch: # Pozwala na ręczne uruchomienie
 
 jobs:
-  build:
-    name: Build Addon for ${{ matrix.arch }}
+  build_and_push:
+    name: Build and Push for ${{ matrix.arch }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,15 +16,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+
+      - name: Create temporary directory for binaries
+        run: mkdir -p ./visionect_server_aio/tmp_build
+
+      - name: Build and extract binaries
+        run: |
+          IMAGE_URL=""
+          OUTPUT_FILE=""
+          if [ "${{ matrix.arch }}" = "amd64" ]; then
+            IMAGE_URL="visionect/visionect-server-v3:7.6.5"
+            OUTPUT_FILE="visionect_amd64.tar.gz"
+          else
+            IMAGE_URL="visionect/visionect-server-v3:7.6.5-arm"
+            OUTPUT_FILE="visionect_arm.tar.gz"
+          fi
+          echo "Extracting from ${IMAGE_URL} to ${OUTPUT_FILE}..."
+          docker run --rm gcr.io/go-containerregistry/crane export ${IMAGE_URL} - | gzip > ./visionect_server_aio/tmp_build/${OUTPUT_FILE}
+          echo "Binary created."
+          ls -lh ./visionect_server_aio/tmp_build
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push addon
         uses: docker/build-push-action@v5
         with:
