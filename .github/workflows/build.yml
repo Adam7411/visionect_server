@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Get addon version from config.yaml
+        id: addon_version
+        run: |
+          addon_version=$(grep 'version:' ./visionect_server_aio/config.yaml | cut -d'"' -f2)
+          echo "version=${addon_version}" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -41,10 +48,10 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           push: true
           # === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
-          # Teraz wysyłamy obraz z dwiema etykietami: "latest" i "2.0.0"
+          # Teraz tagi są budowane dynamicznie na podstawie wersji z config.yaml
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:2.0.0
+            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:${{ steps.addon_version.outputs.version }}
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
             BUILD_ARCH_TAG=${{ steps.image_tag.outputs.tag }}
