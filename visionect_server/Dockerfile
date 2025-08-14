@@ -1,12 +1,10 @@
-FROM visionect/visionect-server-v3:7.6.5
+ARG BUILD_FROM
+FROM $BUILD_FROM
 
-# Instalacja Postgres i Redis
-RUN apt-get update && \
-    apt-get install -y postgresql redis-server && \
-    rm -rf /var/lib/apt/lists/*
+# HA Add-on base setup
+RUN apk add --no-cache bash
 
-# Kopiowanie skryptu uruchamiającego
 COPY run.sh /run.sh
-RUN chmod +x /run.sh
+RUN chmod a+x /run.sh
 
-CMD ["/run.sh"]
+CMD [ "/run.sh" ]
