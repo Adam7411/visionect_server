@@ -1,7 +1,7 @@
 name: "Visionect Server"
 version: "7.6.5"
 slug: "visionect_server"
-description: "Visionect Server with PostgreSQL and Redis for e-paper displays"
+description: "Visionect Server with built-in PostgreSQL and Redis"
 url: "https://github.com/Adam7411/visionect_server"
 arch:
   - amd64
@@ -26,15 +26,4 @@ devices:
 cap_add:
   - MKNOD
   - SYS_ADMIN
-environment:
-  DB2_1_PORT_5432_TCP_ADDR: postgres
-  DB2_1_PORT_5432_TCP_USER: visionect
-  DB2_1_PORT_5432_TCP_PASS: visionect
-  DB2_1_PORT_5432_TCP_DB: koala
-  REDIS_ADDRESS: redis:6379
-  VISIONECT_SERVER_ADDRESS: localhost
-
-image:
-  amd64: "visionect/visionect-server-v3:7.6.5"
-  armv7: "visionect/visionect-server-v3:7.6.5-arm"
-  aarch64: "visionect/visionect-server-v3:7.6.5-arm"
+image: null
