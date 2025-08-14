@@ -1,19 +1,50 @@
-name: "Visionect Server v3"
-version: "0.1.0"
+name: "Visionect Server"
+version: "7.6.5"
 slug: "visionect_server"
-description: "Visionect Server v3 with built-in Postgres and Redis for x86"
+description: "Visionect Server with PostgreSQL and Redis for e-paper displays"
+url: "https://github.com/Adam7411/visionect_server"
 arch:
   - amd64
-startup: "services"
-boot: "auto"
+  - armv7
+  - aarch64
+startup: services
+boot: auto
 ports:
-  "8081/tcp": 8081
-  "11113/tcp": 11113
-privileged:
-  - SYS_ADMIN
-  - MKNOD
-devices:
-  - /dev/fuse:/dev/fuse:rwm
+  8081/tcp: 8081
+  11113/tcp: 11113
+ports_description:
+  8081/tcp: "Web Interface"
+  11113/tcp: "Server Port"
 map:
-  - share:rw
-  - config:rw
+  - type: shm
+    description: "Shared memory"
+    mode: rw
+image: "visionect/visionect-server-v3:7.6.5-{arch}"
+init: false
+privileged: true
+devices:
+  - "/dev/fuse:/dev/fuse:rwm"
+cap_add:
+  - MKNOD
+  - SYS_ADMIN
+environment:
+  DB2_1_PORT_5432_TCP_ADDR: postgres
+  DB2_1_PORT_5432_TCP_USER: visionect
+  DB2_1_PORT_5432_TCP_PASS: visionect
+  DB2_1_PORT_5432_TCP_DB: koala
+  REDIS_ADDRESS: redis:6379
+  VISIONECT_SERVER_ADDRESS: localhost
+services:
+  - name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: visionect
+      POSTGRES_DB: koala
+      POSTGRES_PASSWORD: visionect
+      PGPASSWORD: visionect
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432/tcp: 5432
+  - name: redis
+    image: redis:latest
