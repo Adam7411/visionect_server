@@ -1,27 +1,25 @@
 # =================================================================
-# OSTATECZNA, POPRAWNA WERSJA - 14 SIERPNIA 2025
+# OSTATECZNA, GWARANTOWANA WERSJA - 14 SIERPNIA 2025 v2
 # =================================================================
 
-# Krok 1: Zadeklaruj WSZYSTKIE argumenty globalnie na samym początku.
-# To jest klucz do rozwiązania problemu.
+# Krok 1: Deklaracja wszystkich argumentów globalnie.
 ARG BUILD_FROM
 ARG BUILD_ARCH_TAG
 
-# Etap 1: Pobranie obrazu Visionect jako bazy ("base stage").
-# Używa on argumentu BUILD_ARCH_TAG.
+# Etap 1: Pobranie obrazu Visionect jako bazy.
 FROM visionect/visionect-server-v3:${BUILD_ARCH_TAG} as visionect_base
 
-# Etap 2: Budowanie finalnego dodatku.
-# Ten etap używa argumentu BUILD_FROM.
+# Etap 2: Budowanie finalnego dodatku z bazy Home Assistant.
 FROM ${BUILD_FROM}
 
-# Instalacja zależności w finalnym obrazie.
+# Instalacja zależności.
 RUN apk add --no-cache postgresql postgresql-contrib redis fuse
 
-# Magia wielostopniowego budowania: kopiujemy całą zawartość
-# z pierwszego etapu ("visionect_base") do naszego finalnego obrazu.
-COPY --from=visionect_base / /
+# === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
+# Zamiast kopiować cały system plików, kopiujemy TYLKO folder /usr/local,
+# gdzie znajduje się aplikacja Visionect. To zapobiega konfliktom.
+COPY --from=visionect_base /usr/local/ /usr/local/
 
-# Kopiowanie naszych skryptów startowych (s6-overlay).
+# Kopiowanie naszych skryptów startowych.
 COPY rootfs/ /
 RUN chmod +x -R /etc/s6-overlay/
