@@ -1,5 +1,5 @@
 name: "Visionect Server (all-in-one)"
-version: "1.0.1"
+version: "1.0.2" # Podniosłem wersję, żeby HA na pewno widział zmianę
 slug: "visionect_server_aio"
 description: "Visionect Server with built-in PostgreSQL and Redis. All-in-one package."
 url: "https://github.com/Adam7411/visionect_server"
@@ -21,6 +21,6 @@ map:
 privileged:
   - "SYS_ADMIN"
 devices:
-  - "/dev/fuse:/dev/fuse:rwm"
+  - "/dev/fuse" # <-- TUTAJ JEST KLUCZOWA POPRAWKA
 cap_add:
   - "MKNOD"
