@@ -20,25 +20,6 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Create temporary directory for binaries
-        run: mkdir -p ./visionect_server_aio/tmp_build
-
-      - name: Build and extract binaries
-        run: |
-          IMAGE_URL=""
-          OUTPUT_FILE=""
-          if [ "${{ matrix.arch }}" = "amd64" ]; then
-            IMAGE_URL="visionect/visionect-server-v3:7.6.5"
-            OUTPUT_FILE="visionect_amd64.tar.gz"
-          else
-            IMAGE_URL="visionect/visionect-server-v3:7.6.5-arm"
-            OUTPUT_FILE="visionect_arm.tar.gz"
-          fi
-          echo "Extracting from ${IMAGE_URL} to ${OUTPUT_FILE}..."
-          docker run --rm gcr.io/go-containerregistry/crane export ${IMAGE_URL} - | gzip > ./visionect_server_aio/tmp_build/${OUTPUT_FILE}
-          echo "Binary created."
-          ls -lh ./visionect_server_aio/tmp_build
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -47,6 +28,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Determine Visionect Image Tag
+        id: image_tag
+        run: |
+          if [ "${{ matrix.arch }}" = "amd64" ]; then
+            echo "tag=7.6.5" >> $GITHUB_OUTPUT
+          else
+            echo "tag=7.6.5-arm" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and push addon
         uses: docker/build-push-action@v5
@@ -58,4 +48,5 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:latest
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
+            BUILD_ARCH_TAG=${{ steps.image_tag.outputs.tag }}
             BUILD_FROM=ghcr.io/home-assistant/${{ matrix.arch }}-base:latest
