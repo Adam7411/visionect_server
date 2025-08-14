@@ -19,7 +19,6 @@ map:
   - type: shm
     description: "Shared memory"
     mode: rw
-image: "visionect/visionect-server-v3:7.6.5-{arch}"
 init: false
 privileged: true
 devices:
@@ -34,17 +33,8 @@ environment:
   DB2_1_PORT_5432_TCP_DB: koala
   REDIS_ADDRESS: redis:6379
   VISIONECT_SERVER_ADDRESS: localhost
-services:
-  - name: postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: visionect
-      POSTGRES_DB: koala
-      POSTGRES_PASSWORD: visionect
-      PGPASSWORD: visionect
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432/tcp: 5432
-  - name: redis
-    image: redis:latest
+
+image:
+  amd64: "visionect/visionect-server-v3:7.6.5"
+  armv7: "visionect/visionect-server-v3:7.6.5-arm"
+  aarch64: "visionect/visionect-server-v3:7.6.5-arm"
