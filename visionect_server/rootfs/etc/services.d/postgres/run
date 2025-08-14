@@ -1,0 +1,2 @@
+#!/usr/bin/with-contenv bash
+su - postgres -c "/usr/bin/postgres -D /data/postgres"
