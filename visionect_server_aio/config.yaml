@@ -1,12 +1,14 @@
 name: "Visionect Server (all-in-one)"
-version: "1.0.5"
+version: "2.0.0" # Duża zmiana, więc nowa wersja
 slug: "visionect_server_aio"
-description: "Visionect Server with built-in PostgreSQL and Redis. All-in-one package."
+description: "Visionect Server with built-in PostgreSQL and Redis. Pre-built package."
 url: "https://github.com/Adam7411/visionect_server"
 arch:
   - "aarch64"
   - "amd64"
   - "armv7"
+# Teraz HA nie buduje obrazu, tylko go pobiera z Twojego Docker Hub
+image: "adamak741/visionect-server-aio-{arch}"
 startup: "services"
 boot: "auto"
 init: false
@@ -18,10 +20,9 @@ ports_description:
   "11113/tcp": "Server Port"
 map:
   - "data:rw"
-# Na razie uprawnienia są wyłączone
-# privileged:
-#   - "SYS_ADMIN"
-# devices:
-#   - "/dev/fuse"
-# cap_add:
-#   - "MKNOD"
+privileged:
+  - "SYS_ADMIN"
+devices:
+  - "/dev/fuse"
+cap_add:
+  - "MKNOD"
