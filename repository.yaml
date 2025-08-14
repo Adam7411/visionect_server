@@ -1,5 +1,3 @@
-{
-  "name": "Visionect Server",
-  "url": "https://github.com/Adam7411/visionect_server",
-  "maintainer": "Adam7411 <your_email@example.com>"
-}
+name: Visionect Server AIO Repository
+url: 'https://github.com/Adam7411/visionect_server'
+maintainer: Adam7411
