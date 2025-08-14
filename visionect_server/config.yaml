@@ -1,29 +1,11 @@
 name: "Visionect Server"
 version: "7.6.5"
 slug: "visionect_server"
-description: "Visionect Server with built-in PostgreSQL and Redis"
-url: "https://github.com/Adam7411/visionect_server"
+description: "Visionect Server with PostgreSQL and Redis"
 arch:
   - amd64
   - armv7
   - aarch64
 startup: services
 boot: auto
-ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
-ports_description:
-  8081/tcp: "Web Interface"
-  11113/tcp: "Server Port"
-map:
-  - type: shm
-    description: "Shared memory"
-    mode: rw
 init: false
-privileged: true
-devices:
-  - "/dev/fuse:/dev/fuse:rwm"
-cap_add:
-  - MKNOD
-  - SYS_ADMIN
-image: null
