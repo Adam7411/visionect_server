@@ -1,42 +1,42 @@
 name: Extract Visionect Binaries
 
-# Uruchom ten skrypt ręcznie
 on:
   workflow_dispatch:
 
 jobs:
-  extract-and_upload:
+  extract-amd64:
+    name: 1. Extract AMD64 Binary
     runs-on: ubuntu-latest
     steps:
-      - name: Set up QEMU for multi-platform builds
-        uses: docker/setup-qemu-action@v2
-
-      - name: Extract AMD64 binary
+      - name: Extract and Package AMD64
         run: |
           echo "Pulling AMD64 image..."
           docker pull visionect/visionect-server-v3:7.6.5
           echo "Creating and exporting container..."
           docker create --name vss_tmp_amd64 visionect/visionect-server-v3:7.6.5
           docker export vss_tmp_amd64 | gzip > visionect_amd64.tar.gz
-          docker rm vss_tmp_amd64
           echo "AMD64 binary created."
-
       - name: Upload AMD64 binary as artifact
         uses: actions/upload-artifact@v3
         with:
           name: visionect-amd64-binary
           path: visionect_amd64.tar.gz
 
-      - name: Extract ARM binary
+  extract-arm:
+    name: 2. Extract ARM Binary
+    runs-on: ubuntu-latest
+    needs: extract-amd64
+    steps:
+      - name: Set up QEMU for multi-platform support
+        uses: docker/setup-qemu-action@v2
+      - name: Extract and Package ARM
         run: |
           echo "Pulling ARM image..."
           docker pull --platform linux/arm/v7 visionect/visionect-server-v3:7.6.5-arm
           echo "Creating and exporting container..."
           docker create --platform linux/arm/v7 --name vss_tmp_arm visionect/visionect-server-v3:7.6.5-arm
           docker export vss_tmp_arm | gzip > visionect_arm.tar.gz
-          docker rm vss_tmp_arm
           echo "ARM binary created."
-
       - name: Upload ARM binary as artifact
         uses: actions/upload-artifact@v3
         with:
