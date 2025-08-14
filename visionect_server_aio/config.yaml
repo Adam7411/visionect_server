@@ -4,71 +4,23 @@ slug: "visionect_server_aio"
 description: "Visionect Server with built-in PostgreSQL and Redis. All-in-one package."
 url: "https://github.com/Adam7411/visionect_server"
 arch:
-  - amd64
-  - armv7
-  - aarch64
-startup: services
-boot: auto
+  - "aarch64"
+  - "amd64"
+  - "armv7"
+startup: "services"
+boot: "auto"
 init: false
 ports:
-  8081/tcp: 8081
-  11113/tcp: 11113
+  "8081/tcp": 8081
+  "11113/tcp": 11113
 ports_description:
-  8081/tcp: "Web Interface"
-  11113/tcp: "Server Port"
+  "8081/tcp": "Web Interface"
+  "11113/tcp": "Server Port"
 map:
-  - data:rw
+  - "data:rw"
 privileged:
-  - SYS_ADMIN
+  - "SYS_ADMIN"
 devices:
-  - /dev/fuse:/dev/fuse:rwm
+  - "/dev/fuse:/dev/fuse:rwm"
 cap_add:
-  - MKNOD```
-
-#### **3. `visionect_server_aio/Dockerfile`**
-To jest serce dodatku. Będzie pobierać pliki z Twojego "Release".
-
-```dockerfile
-# Używamy oficjalnego obrazu bazowego Home Assistant, który zawiera s6-overlay
-ARG BUILD_FROM
-FROM ${BUILD_FROM}
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# Zmienna z architekturą (amd64, aarch64, armv7) dostarczana przez HA
-ARG BUILD_ARCH
-
-# Instalacja zależności: postgres, redis, fuse i curl do pobierania
-RUN apk add --no-cache \
-    postgresql \
-    postgresql-contrib \
-    redis \
-    fuse \
-    curl
-
-# Pobieranie i rozpakowywanie plików binarnych Visionect z Twojego GitHub Release
-RUN \
-    echo "Determining download URL for architecture: ${BUILD_ARCH}..." \
-    && case "${BUILD_ARCH}" in \
-        "amd64") \
-            DOWNLOAD_URL="https://github.com/Adam7411/visionect_server/releases/download/v1.0.0-binaries/visionect_amd64.tar.gz" \
-            ;; \
-        "armv7" | "aarch64") \
-            DOWNLOAD_URL="https://github.com/Adam7411/visionect_server/releases/download/v1.0.0-binaries/visionect_arm.tar.gz" \
-            ;; \
-        *) \
-            echo "FATAL: Unsupported architecture: ${BUILD_ARCH}" && exit 1 \
-            ;; \
-    esac \
-    && echo "Downloading from ${DOWNLOAD_URL}..." \
-    && curl -L -o /tmp/visionect.tar.gz "${DOWNLOAD_URL}" \
-    && echo "Unpacking binaries to root directory..." \
-    && tar -xzf /tmp/visionect.tar.gz -C / \
-    && echo "Cleaning up temporary file..." \
-    && rm /tmp/visionect.tar.gz
-
-# Kopiowanie skryptów s6-overlay do kontenera
-COPY rootfs/ /
-
-# Nadanie uprawnień do uruchamiania skryptów
-RUN chmod +x -R /etc/s6-overlay/
+  - "MKNOD"
