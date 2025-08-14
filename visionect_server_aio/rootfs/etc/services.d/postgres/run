@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv bash
+echo "Starting PostgreSQL server..."
+exec su - postgres -c "postgres -D /data/postgres"
