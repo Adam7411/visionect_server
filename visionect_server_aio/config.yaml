@@ -1,6 +1,7 @@
 name: "Visionect Server (all-in-one)"
-version: "2.0.0" # Duża zmiana, więc nowa wersja
+version: "2.0.1" # <-- JEDYNA ZMIANA
 slug: "visionect_server_aio"
+# ... reszta pliku bez zmian ...
 description: "Visionect Server with built-in PostgreSQL and Redis. Pre-built package."
 url: "https://github.com/Adam7411/visionect_server"
 arch:
