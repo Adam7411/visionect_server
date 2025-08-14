@@ -1,15 +1,21 @@
+# =================================================================
+# OSTATECZNA, FINAŁOWA WERSJA - Z PRZYCISKIEM TRYBU OCHRONY
+# =================================================================
 name: "Visionect Server (all-in-one)"
-version: "2.0.1" # <-- JEDYNA ZMIANA
+version: "2.1.0" # Duża zmiana w funkcjonalności, więc nowa wersja
 slug: "visionect_server_aio"
-# ... reszta pliku bez zmian ...
-description: "Visionect Server with built-in PostgreSQL and Redis. Pre-built package."
+description: "Visionect Server with built-in PostgreSQL and Redis. Requires Protection Mode OFF."
 url: "https://github.com/Adam7411/visionect_server"
 arch:
   - "aarch64"
   - "amd64"
   - "armv7"
-# Teraz HA nie buduje obrazu, tylko go pobiera z Twojego Docker Hub
-image: "adamak741/visionect-server-aio-{arch}"
+
+# === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
+# Deklarujemy, że ten dodatek wymaga WYŁĄCZENIA Trybu Ochrony.
+# To spowoduje pojawienie się przełącznika na stronie dodatku w HA.
+protection: false
+
 startup: "services"
 boot: "auto"
 init: false
