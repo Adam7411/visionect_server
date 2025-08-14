@@ -17,7 +17,7 @@ jobs:
           docker export vss_tmp_amd64 | gzip > visionect_amd64.tar.gz
           echo "AMD64 binary created."
       - name: Upload AMD64 binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # <-- POPRAWIONA WERSJA
         with:
           name: visionect-amd64-binary
           path: visionect_amd64.tar.gz
@@ -38,7 +38,7 @@ jobs:
           docker export vss_tmp_arm | gzip > visionect_arm.tar.gz
           echo "ARM binary created."
       - name: Upload ARM binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # <-- POPRAWIONA WERSJA
         with:
           name: visionect-arm-binary
           path: visionect_arm.tar.gz
