@@ -1,5 +1,5 @@
 # =================================================================
-# OSTATECZNA, GWARANTOWANA WERSJA - 14 SIERPNIA 2025 v2
+# OSTATECZNA, GWARANTOWANA WERSJA - 14 SIERPNIA 2025 v3 - FINAŁ
 # =================================================================
 
 # Krok 1: Deklaracja wszystkich argumentów globalnie.
@@ -15,11 +15,12 @@ FROM ${BUILD_FROM}
 # Instalacja zależności.
 RUN apk add --no-cache postgresql postgresql-contrib redis fuse
 
-# === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
-# Zamiast kopiować cały system plików, kopiujemy TYLKO folder /usr/local,
-# gdzie znajduje się aplikacja Visionect. To zapobiega konfliktom.
+# Kopiujemy TYLKO folder /usr/local, gdzie znajduje się aplikacja Visionect.
 COPY --from=visionect_base /usr/local/ /usr/local/
 
 # Kopiowanie naszych skryptów startowych.
 COPY rootfs/ /
-RUN chmod +x -R /etc/s6-overlay/
+
+# === OSTATECZNA POPRAWKA, KTÓRA WSZYSTKO NAPRAWIA ===
+# Nadajemy uprawnienia do uruchamiania WSZYSTKIM skryptom, które skopiowaliśmy.
+RUN chmod +x -R /etc/cont-init.d /etc/services.d
