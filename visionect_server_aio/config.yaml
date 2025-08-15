@@ -1,6 +1,6 @@
 name: "Visionect Server (FINAL)"
-version: "4.0.0" # Całkowicie nowa wersja
-slug: "visionect_server_final" # <-- NOWY, UNIKALNY IDENTYFIKATOR
+version: "4.0.0"
+slug: "visionect_server_final"
 description: "Visionect Server with built-in PostgreSQL and Redis. Pre-built package. Requires Protection Mode OFF."
 url: "https://github.com/Adam7411/visionect_server"
 arch:
@@ -8,7 +8,9 @@ arch:
   - "amd64"
   - "armv7"
 protection: false
-image: "adamak741/visionect-server-aio-{arch}" # Nazwa obrazu zostaje ta sama
+# === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
+# Nazwa obrazu musi być spójna ze slugiem.
+image: "adamak741/visionect-server-final-{arch}"
 startup: "services"
 boot: "auto"
 init: false
