@@ -1,9 +1,8 @@
 # =================================================================
-# OSTATECZNA, GWARANTOWANA, TECHNICZNIE POPRAWNA WERSJA - FINAŁ
+# OSTATECZNA, GWARANTOWANA, TECHNICZNIE POPRAWNA WERSJA
 # =================================================================
 
 # Krok 1: Deklarujemy WSZYSTKIE argumenty globalnie na samym początku.
-# To jest klucz do rozwiązania problemu - teraz będą widoczne wszędzie.
 ARG BUILD_ARCH
 ARG BUILD_ARCH_TAG
 
