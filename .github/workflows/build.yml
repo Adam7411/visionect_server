@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Get addon version from config.yaml
+        id: addon_version
+        run: |
+          addon_version=$(grep 'version:' ./visionect_server_aio/config.yaml | cut -d'"' -f2)
+          echo "version=${addon_version}" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -33,11 +40,6 @@ jobs:
           else
             echo "tag=7.6.5-arm" >> $GITHUB_OUTPUT
           fi
-      - name: Get addon version from config.yaml
-        id: addon_version
-        run: |
-          addon_version=$(grep 'version:' ./visionect_server_aio/config.yaml | cut -d'"' -f2)
-          echo "version=${addon_version}" >> $GITHUB_OUTPUT
       - name: Build and push addon
         uses: docker/build-push-action@v5
         with:
