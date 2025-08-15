@@ -16,11 +16,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Get addon version from config.yaml
+
+      - name: Get addon version from config.yaml (Reliable Method)
         id: addon_version
         run: |
-          addon_version=$(grep 'version:' ./visionect_server_final/config.yaml | cut -d'"' -f2)
+          # Używamy 'awk' - jest to znacznie bardziej niezawodne narzędzie do parsowania tekstu.
+          # Szuka on linii zaczynającej się od "version:", a następnie wyciąga tekst w cudzysłowach.
+          addon_version=$(awk -F'"' '/^version:/ {print $2}' ./visionect_server_final/config.yaml)
+
+          # Sprawdzanie błędów: Jeśli wersja jest pusta, zatrzymaj akcję z błędem.
+          if [ -z "$addon_version" ]; then
+            echo "Error: Could not extract version from config.yaml. Value is empty."
+            exit 1
+          fi
+          echo "Successfully extracted version: ${addon_version}"
           echo "version=${addon_version}" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -45,8 +56,6 @@ jobs:
           file: ./visionect_server_final/Dockerfile
           platforms: linux/${{ matrix.arch }}
           push: true
-          # === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
-          # Nazwa obrazu musi być spójna ze slugiem.
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-final-${{ matrix.arch }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-final-${{ matrix.arch }}:${{ steps.addon_version.outputs.version }}
