@@ -3,6 +3,7 @@ set -e
 
 DATA_DIR="/data/postgres"
 
+# Inicjalizuj bazę danych, jeśli katalog jest pusty
 if [ -z "$(ls -A "$DATA_DIR" 2>/dev/null)" ]; then
   echo "Initializing PostgreSQL database..."
   mkdir -p "$DATA_DIR"
@@ -18,10 +19,4 @@ if [ -z "$(ls -A "$DATA_DIR" 2>/dev/null)" ]; then
 EOSQL"
   su - postgres -c "pg_ctl -D '$DATA_DIR' -m fast -w stop"
   echo "PostgreSQL initialization complete."
-fi```
-
-#### **5.2. `visionect_server_aio/rootfs/etc/services.d/postgres/run`**
-```bash
-#!/usr/bin/with-contenv bash
-echo "Starting PostgreSQL server..."
-exec su - postgres -c "postgres -D /data/postgres"
+fi
