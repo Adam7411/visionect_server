@@ -19,7 +19,7 @@ jobs:
       - name: Get addon version from config.yaml
         id: addon_version
         run: |
-          addon_version=$(grep 'version:' ./visionect_server_final/config.yaml | cut -d'"' -f2) # <-- POPRAWIONA ŚCIEŻKA
+          addon_version=$(grep 'version:' ./visionect_server_final/config.yaml | cut -d'"' -f2)
           echo "version=${addon_version}" >> $GITHUB_OUTPUT
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -41,13 +41,15 @@ jobs:
       - name: Build and push addon
         uses: docker/build-push-action@v5
         with:
-          context: ./visionect_server_final # <-- POPRAWIONA ŚCIEŻKA
-          file: ./visionect_server_final/Dockerfile # <-- POPRAWIONA ŚCIEŻKA
+          context: ./visionect_server_final
+          file: ./visionect_server_final/Dockerfile
           platforms: linux/${{ matrix.arch }}
           push: true
+          # === KLUCZOWA ZMIANA, KTÓRA WSZYSTKO NAPRAWIA ===
+          # Nazwa obrazu musi być spójna ze slugiem.
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-aio-${{ matrix.arch }}:${{ steps.addon_version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-final-${{ matrix.arch }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/visionect-server-final-${{ matrix.arch }}:${{ steps.addon_version.outputs.version }}
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
             BUILD_ARCH_TAG=${{ steps.image_tag.outputs.tag }}
