@@ -16,13 +16,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Get addon version from config.yaml
         id: addon_version
         run: |
-          addon_version=$(grep 'version:' ./visionect_server_aio/config.yaml | cut -d'"' -f2)
+          addon_version=$(grep 'version:' ./visionect_server_final/config.yaml | cut -d'"' -f2) # <-- POPRAWIONA ŚCIEŻKA
           echo "version=${addon_version}" >> $GITHUB_OUTPUT
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -43,8 +41,8 @@ jobs:
       - name: Build and push addon
         uses: docker/build-push-action@v5
         with:
-          context: ./visionect_server_aio
-          file: ./visionect_server_aio/Dockerfile
+          context: ./visionect_server_final # <-- POPRAWIONA ŚCIEŻKA
+          file: ./visionect_server_final/Dockerfile # <-- POPRAWIONA ŚCIEŻKA
           platforms: linux/${{ matrix.arch }}
           push: true
           tags: |
